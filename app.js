@@ -1,25 +1,41 @@
 const createError = require('http-errors')
 const express = require('express')
-const path = require('path')
-const cookieParser = require('cookie-parser')
-const logger = require('morgan')
+require('dotenv').config()
+// Artifcats from express application generator
+//const cookieParser = require('cookie-parser')
+//const logger = require('morgan')
 const mysql = require('mysql2')
 
-const testAPIRouter = require('./routes/posts')
-const indexRouter = require('./routes/comments')
+const testAPIRouter = require('./routes/comments')
+const indexRouter = require('./routes/posts')
 const usersRouter = require('./routes/users')
 
 const app = express()
 
 
 
-
-app.use(logger('dev'))
+// Artifacts from express application generator
+//app.use(logger('dev'))
+//app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser())
 
 
+// Create Connection
+const db = mysql.createConnection({
+  host      : process.env.DB_HOST,
+  user      : process.env.DB_USER,
+  password  : process.env.DB_PASS,
+  database  : 'groupomania'
+})
+
+// Connect
+db.connect((err) => {
+  if(err) {
+    throw err;
+  }
+  console.log('MySQL Connected')
+})
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)

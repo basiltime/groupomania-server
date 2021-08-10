@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 router.get('/', function(req, res, next) {
-    res.send('API is working properly')
+    res.send('respond with a post resource')
 });
 
 module.exports = router;
