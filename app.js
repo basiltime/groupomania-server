@@ -4,7 +4,7 @@ require('dotenv').config()
 // Artifts from express application generator
 //const cookieParser = require('cookie-parser')
 //const logger = require('morgan')
-const mysql = require('mysql2')
+
 
 
 const postsRouter = require('./routes/posts')
@@ -44,7 +44,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+
 });
 
 module.exports = app;
