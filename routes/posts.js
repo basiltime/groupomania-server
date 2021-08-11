@@ -3,6 +3,7 @@ const router = express.Router()
 
 router.get('/', function(req, res, next) {
     res.send('respond with a post resource')
+    
 });
 
 module.exports = router;

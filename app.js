@@ -1,13 +1,13 @@
 const createError = require('http-errors')
 const express = require('express')
 require('dotenv').config()
-// Artifcats from express application generator
+// Artifts from express application generator
 //const cookieParser = require('cookie-parser')
 //const logger = require('morgan')
 const mysql = require('mysql2')
 
-const testAPIRouter = require('./routes/comments')
-const indexRouter = require('./routes/posts')
+
+const postsRouter = require('./routes/posts')
 const usersRouter = require('./routes/users')
 
 const app = express()
@@ -20,26 +20,16 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  next();
+});
 
-// Create Connection
-const db = mysql.createConnection({
-  host      : process.env.DB_HOST,
-  user      : process.env.DB_USER,
-  password  : process.env.DB_PASS,
-  database  : 'groupomania'
-})
-
-// Connect
-db.connect((err) => {
-  if(err) {
-    throw err;
-  }
-  console.log('MySQL Connected')
-})
-
-app.use('/', indexRouter)
+app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
-app.use('/testAPI', testAPIRouter)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
