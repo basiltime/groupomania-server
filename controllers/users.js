@@ -1,7 +1,7 @@
 const express = require('express')
 const db = require('../database-connection/db')
 const bcrypt = require('bcryptjs')
-
+const jwt =  require('jsonwebtoken')
 
 /* POST Create Account */
 exports.signup = (req, res, next) => {
@@ -32,9 +32,16 @@ exports.login = (req, res, next) => {
     console.log(req.body.email)
     console.log(results[0].password)
   
-    bcrypt.compare(req.body.password, results[0].password, function(err, res) {
-        if (res === true) {console.log('Password Matches!')} 
-        else if (res === false) {console.log('Password does not match!!!')}
+    bcrypt.compare(req.body.password, results[0].password, function(err, response) {
+        if (response === true) {console.log('Password Matches!'); const token = jwt.sign(
+            { email: req.body.email },
+            'E36FOKN9EjDASoGqoNUQwrpjHeNoLpJ9h4a7ACAzpHjZ3nbHpQaejjEFAGcFxn4',
+            { expiresIn: '24h' });
+          res.status(200).json({
+            email: req.body.email,
+            token: token
+          });} 
+        else if (response === false) {console.log('Password does not match!!!')}
     });
 })  
 
