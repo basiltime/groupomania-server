@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
+const auth = require('../middleware/auth')
+const postsCtrl = require('../controllers/posts')
 
-router.get('/', function(req, res, next) {
-    res.send('respond with a post resource')
-    
-});
 
-module.exports = router;
+router.get('/', auth, postsCtrl.newsfeed)
+
+module.exports = router

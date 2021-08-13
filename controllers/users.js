@@ -1,7 +1,7 @@
-const express = require('express')
 const db = require('../database-connection/db')
 const bcrypt = require('bcryptjs')
-const jwt =  require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
+const dotenv = require('dotenv')
 
 /* POST Create Account */
 exports.signup = (req, res, next) => {
@@ -19,36 +19,33 @@ VALUES ( '${req.body.firstName}',
       if (err) throw err
       console.log('New Account Created')
     })
-   
   })
 }
 
-
-
 exports.login = (req, res, next) => {
-    const loginData = `SELECT * FROM users WHERE email = '${req.body.email}';`
-    db.query(loginData, (err, results) => {
+  const loginData = `SELECT * FROM users WHERE email = '${req.body.email}';`
+  db.query(loginData, (err, results) => {
     if (err) throw err
-    console.log(req.body.email)
-    console.log(results[0].password)
-  
-    bcrypt.compare(req.body.password, results[0].password, function(err, response) {
-        if (response === true) {console.log('Password Matches!'); const token = jwt.sign(
-            { email: req.body.email },
-            'E36FOKN9EjDASoGqoNUQwrpjHeNoLpJ9h4a7ACAzpHjZ3nbHpQaejjEFAGcFxn4',
-            { expiresIn: '24h' });
-          res.status(200).json({
-            email: req.body.email,
-            token: token
-          });} 
-        else if (response === false) {console.log('Password does not match!!!')}
-    });
-})  
 
+    let user = results[0]
+
+    bcrypt.compare(req.body.password, user.password, function (err, response) {
+      if (response === true) {
+        console.log('Password Matches!')
+
+        const token = jwt.sign(
+          { userId: user.userId },
+          process.env.SECRET_ACCESS_KEY,
+          { expiresIn: '24h' },
+        )
+
+        res.status(200).json({
+          userId: user.userId,
+          token: token,
+        })
+      } else if (response === false) {
+        console.log('Password does not match!!!')
+      }
+    })
+  })
 }
-
-
-
-
-
-  
