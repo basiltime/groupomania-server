@@ -49,3 +49,29 @@ exports.login = (req, res, next) => {
     })
   })
 }
+
+exports.viewAccount = (req, res, next) => {
+  const userData = `SELECT * FROM users WHERE userId = '${req.params.id}'`;
+
+  db.query(userData, (err, results) => {
+    let user = results[0]
+    if (err) throw err
+    res.status(200).json({
+      firstName: `${user.firstName}`,
+      lastName: `${user.lastName}`,
+      email: `${user.email}`
+    })
+  })
+ 
+}
+
+exports.deleteAccount = (req, res, next) => {
+  const deleteUser = `DELETE FROM users WHERE userId = '${req.params.id}'`;
+
+  db.query(deleteUser, (err, results) => {
+    if (err) throw err
+    res.status(200).json({
+      message: 'Account successfully deleted'
+    })
+  })
+}

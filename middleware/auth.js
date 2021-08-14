@@ -6,9 +6,9 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization
     jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, user) => {
       if (err) {
-        return res.status(403).send('Keep trying!')
+        return res.status(403).send('Unauthorized!')
       }
-      req.userId = user.userId
+      
       next()
     })
   } catch (error) {
