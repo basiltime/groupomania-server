@@ -11,21 +11,38 @@ exports.signup = (req, res, next) => {
           lastName, 
           email, 
           password ) 
-VALUES ( '${req.body.firstName}',
-         '${req.body.lastName}', 
-         '${req.body.email}', 
-         '${hash}' )`
-    db.query(accountData, (err, rows) => {
+    VALUES ( '${req.body.firstName}',
+            '${req.body.lastName}', 
+            '${req.body.email}', 
+            '${hash}' )`
+    db.query(accountData, (err, fields) => {
       if (err) throw err
       console.log('New Account Created')
+      let user = fields.insertId
+      console.log(user)
+      const token = jwt.sign(
+        { userId: user },
+        process.env.SECRET_ACCESS_KEY,
+        { expiresIn: '24h' },
+      )
+      res.status(200).json({
+        userId: user,
+        token: token,
+      })
     })
+    
   })
+
 }
 
+/* POST Login */
 exports.login = (req, res, next) => {
   const loginData = `SELECT * FROM users WHERE email = '${req.body.email}';`
   db.query(loginData, (err, results) => {
     if (err) throw err
+    
+    if (results[0] === undefined) { console.log('errorrrrr')} else {
+
 
     let user = results[0]
 
@@ -47,6 +64,7 @@ exports.login = (req, res, next) => {
         console.log('Password does not match!!!')
       }
     })
+  }
   })
 }
 
