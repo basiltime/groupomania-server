@@ -16,7 +16,10 @@ exports.signup = (req, res, next) => {
             '${req.body.email}', 
             '${hash}' )`
     db.query(accountData, (err, fields) => {
-      if (err) throw err
+      if (err && (err.code = 'ER_DUP_ENTRY')) { res.status(409).json({message: 'duplicate email'}) } 
+      else if (err) {res.status(500).json({message: 'something else went wrong'})}
+      else {
+      
       console.log('New Account Created')
       let user = fields.insertId
       console.log(user)
@@ -29,8 +32,8 @@ exports.signup = (req, res, next) => {
         userId: user,
         token: token,
       })
+    }
     })
-    
   })
 
 }
@@ -41,11 +44,13 @@ exports.login = (req, res, next) => {
   db.query(loginData, (err, results) => {
     if (err) throw err
     
-    if (results[0] === undefined) { console.log('errorrrrr')} else {
+    if (results[0] === undefined) {
+      res.status(401).json({
+        message: "Invalid email."
+      })
 
-
+    } else {
     let user = results[0]
-
     bcrypt.compare(req.body.password, user.password, function (err, response) {
       if (response === true) {
         console.log('Password Matches!')
@@ -61,7 +66,9 @@ exports.login = (req, res, next) => {
           token: token,
         })
       } else if (response === false) {
-        console.log('Password does not match!!!')
+        res.status(401).json({
+          message: "Incorrect password"
+        })
       }
     })
   }
