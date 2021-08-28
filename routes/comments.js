@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
+const commentCtrl = require('../controllers/comments')
 
-/* GET const page. */
-router.get('/', function(req, res, next) {
-  res.send('Home')
-});
+
+router.post('/', commentCtrl.createComment)
 
 module.exports = router;

@@ -5,7 +5,7 @@ const postsCtrl = require('../controllers/posts')
 
 
 router.get('/', auth, postsCtrl.newsfeed)
-router.post('/', auth, postsCtrl.createPost)
+router.post('/', postsCtrl.createPost)
 
 
 module.exports = router

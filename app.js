@@ -1,22 +1,12 @@
 const createError = require('http-errors')
 const express = require('express')
 require('dotenv').config()
-// Artifts from express application generator
-//const cookieParser = require('cookie-parser')
-//const logger = require('morgan')
-
-
-
 const postsRouter = require('./routes/posts')
 const usersRouter = require('./routes/users')
-
+const commentsRouter = require('./routes/comments')
 const app = express()
 
 
-
-// Artifacts from express application generator
-//app.use(logger('dev'))
-//app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
@@ -29,7 +19,7 @@ app.use((req, res, next) => {
 
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
-
+app.use('/comments', commentsRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
