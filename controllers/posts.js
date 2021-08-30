@@ -1,10 +1,16 @@
 const db = require('../database-connection/db')
 
+
+ 
+
 exports.newsfeed = (req, res, next) => {
-  const newsFeed = `SELECT users.userId, users.firstName, users.lastName, posts.textContent, posts.multimediaUrl, posts.timestamp
-    FROM posts, users
-    WHERE users.userId = posts.userId;`
-  db.execute(newsFeed, (err, results) => {
+  const newsFeed = `SELECT *
+  FROM posts
+  INNER JOIN users 
+  ON posts.userId = users.userId
+  LEFT OUTER JOIN comments
+  ON posts.postId = comments.postId;`
+  db.query(newsFeed, (err, results) => {
     res.status(200).json({
       data: results,
       message: 'Newsfeed Loaded',
