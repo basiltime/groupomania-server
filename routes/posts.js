@@ -4,7 +4,7 @@ const auth = require('../middleware/auth')
 const postsCtrl = require('../controllers/posts')
 
 
-router.get('/', auth, postsCtrl.newsfeed)
+router.get('/', postsCtrl.newsfeed)
 router.post('/', postsCtrl.createPost)
 
 

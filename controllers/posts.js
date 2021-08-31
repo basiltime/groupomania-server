@@ -6,10 +6,8 @@ const db = require('../database-connection/db')
 exports.newsfeed = (req, res, next) => {
   const newsFeed = `SELECT *
   FROM posts
-  INNER JOIN users 
-  ON posts.userId = users.userId
-  LEFT OUTER JOIN comments
-  ON posts.postId = comments.postId;`
+  LEFT OUTER JOIN users 
+  ON posts.userId = users.userId;`
   db.query(newsFeed, (err, results) => {
     res.status(200).json({
       data: results,
@@ -17,6 +15,10 @@ exports.newsfeed = (req, res, next) => {
     })
   })
 }
+
+
+
+
 
 exports.createPost = (req, res, next) => {
   db.execute(
