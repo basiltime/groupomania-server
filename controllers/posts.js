@@ -26,8 +26,8 @@ exports.createPost = (req, res, next) => {
     [
       `${req.body.textContent}`,
       `${req.body.timestamp}`,
-      `${req.body.imageUrl}`,
-      `${req.body.userId}`,
+      `${req.file.location}`,
+      `${req.body.userId}`
     ],
     (err) => {
       if (err) {
@@ -40,4 +40,6 @@ exports.createPost = (req, res, next) => {
       }
     },
   )
+
+
 }
