@@ -3,16 +3,21 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 
+
+
 /* Create Account */
 exports.signup = (req, res, next) => {
+
+console.log(req)
   bcrypt.hash(req.body.password, 10).then((hash) => {
     db.execute(
-      'INSERT INTO users ( firstName, lastName, email, password ) VALUES (?, ?, ?, ?)',
+      'INSERT INTO users ( firstName, lastName, email, password, profilePicUrl ) VALUES (?, ?, ?, ?, ?)',
       [
         `${req.body.firstName}`,
         `${req.body.lastName}`,
         `${req.body.email}`,
         `${hash}`,
+        `${req.file.location}`
       ],
       (err, fields) => {
         if (err && (err.code = 'ER_DUP_ENTRY')) {
@@ -34,7 +39,7 @@ exports.signup = (req, res, next) => {
         }
       },
     )
-  })
+  }).catch(console.log(req))
 }
 
 /* Login */
@@ -88,6 +93,7 @@ exports.viewAccount = (req, res, next) => {
         firstName: `${user.firstName}`,
         lastName: `${user.lastName}`,
         email: `${user.email}`,
+        profilePicUrl: `${user.profilePicUrl}`
       })
     },
   )
