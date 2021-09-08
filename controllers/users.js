@@ -10,7 +10,7 @@ exports.signup = (req, res, next) => {
   // Check if there is a file before submitting values to database. If not, set the profilePicUrl as null.
   let profilePic = ""
   if (req.file) {profilePic = req.file.location}
-  else {profilePic = null}
+  else {profilePic = 'images/no-photo.png'}
   bcrypt.hash(req.body.password, 10).then((hash) => {
     db.execute(
       'INSERT INTO users ( firstName, lastName, email, password, profilePicUrl ) VALUES (?, ?, ?, ?, ?)',
