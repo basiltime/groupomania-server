@@ -18,7 +18,10 @@ exports.createComment = (req, res, next) => {
 
 exports.getAllComments = (req, res, next) => {
   db.execute(
-      'SELECT * FROM comments', (err, comments) => {
+      `SELECT *
+  FROM comments
+  LEFT OUTER JOIN users 
+  ON comments.commenterId = users.userId`, (err, comments) => {
           if (err) {res.status(400).json({message: "error occured"})}
   res.status(200).json({
     data: comments,

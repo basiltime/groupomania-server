@@ -13,17 +13,21 @@ exports.like = (req, res, next) => {
           'INSERT INTO likes ( postId, userId ) VALUES ( ?, ?)',
           [`${req.body.postId}`, `${req.body.userId}`],(err, results) => {},
         )
-        res.status(200).json({
-          message: 'Post was liked!',
-        })
+        db.execute(`SELECT * FROM likes`, (err, results) => {
+          res.status(200).json({
+              data: results
+          })
+      })
       } else if (!results.length == 0) {
         db.execute(
           'DELETE FROM likes WHERE ( postId, userId ) = ( ?, ? );', 
           [`${req.body.postId}`, `${req.body.userId}`], (err, results) => {},
         )
-        res.status(200).json({
-          message: 'Like removed!',
-        })
+        db.execute(`SELECT * FROM likes`, (err, results) => {
+          res.status(200).json({
+              data: results
+          })
+      })
       }
     },
   )
