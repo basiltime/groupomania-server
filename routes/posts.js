@@ -6,7 +6,7 @@ const imageUpload = require('../middleware/imageUpload')
 
 
 router.get('/', auth, postsCtrl.newsfeed)
-router.post('/', imageUpload, postsCtrl.createPost)
+router.post('/', auth, imageUpload, postsCtrl.createPost)
 
 
 module.exports = router
