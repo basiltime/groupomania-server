@@ -1,8 +1,5 @@
 const db = require('../database-connection/db')
 
-
- 
-
 exports.newsfeed = (req, res, next) => {
   db.execute(`SELECT *
   FROM posts
@@ -14,10 +11,6 @@ exports.newsfeed = (req, res, next) => {
     })
   })
 }
-
-
-
-
 
 exports.createPost = (req, res, next) => {
   // Check if there is a file before submitting values to database. If not, set the multimediaUrl as null.

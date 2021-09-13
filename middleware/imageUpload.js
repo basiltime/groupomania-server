@@ -3,21 +3,16 @@ const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const dotenv = require('dotenv').config({ path: '../.env' });
 
-
 const MIME_TYPES = {
     'image/jpg': 'jpg',
     'image/jpeg': 'jpg',
     'image/png': 'png'
 }
-
-
 const s3 = new aws.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     region: "us-east-2",
 });
-
-
 
 const upload = multer({
     storage: multerS3({
