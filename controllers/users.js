@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 
 
-
 /* Create Account */
 exports.signup = (req, res, next) => {
   // Check if there is a file before submitting values to database. If not, set the profilePicUrl as null.
