@@ -15,7 +15,8 @@ exports.like = (req, res, next) => {
         )
         db.execute(`SELECT * FROM likes`, (err, results) => {
           res.status(200).json({
-              data: results
+              data: results,
+              message: 'Liked'
           })
       })
       } else if (!results.length == 0) {
@@ -25,7 +26,8 @@ exports.like = (req, res, next) => {
         )
         db.execute(`SELECT * FROM likes`, (err, results) => {
           res.status(200).json({
-              data: results
+              data: results,
+              message: 'Unliked'
           })
       })
       }
