@@ -2,12 +2,12 @@ const db = require('../database-connection/db')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
-const aws = require('aws-sdk');
+const aws = require('aws-sdk')
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: "us-east-2",
-});
+  region: 'us-east-2',
+})
 
 /* Create Account */
 exports.signup = (req, res, next) => {
@@ -29,7 +29,7 @@ exports.signup = (req, res, next) => {
         `${req.body.email}`,
         `${hash}`,
         `${profilePic}`,
-        `${s3ImageKey}`
+        `${s3ImageKey}`,
       ],
       (err, fields) => {
         if (err && (err.code = 'ER_DUP_ENTRY')) {
@@ -114,7 +114,6 @@ exports.viewAccount = (req, res, next) => {
 
 /* Delete Account */
 exports.deleteAccount = (req, res, next) => {
-
   db.execute(
     `SELECT s3ImageKey
   FROM users
@@ -122,11 +121,14 @@ exports.deleteAccount = (req, res, next) => {
     [`${req.params.id}`],
     (err, results) => {
       if (err) throw err
-     const params = {  Bucket: 'groupomania-images', Key: results[0].s3ImageKey };
-      s3.deleteObject(params, function(err) {
-        if (err) console.log(err, err.stack);  
-        else     console.log('Deleted');                
-      });
+      const params = {
+        Bucket: 'groupomania-images',
+        Key: results[0].s3ImageKey,
+      }
+      s3.deleteObject(params, function (err) {
+        if (err) console.log(err, err.stack)
+        else console.log('Deleted')
+      })
 
       db.execute(
         `SELECT s3ImageKey
@@ -135,12 +137,25 @@ exports.deleteAccount = (req, res, next) => {
         [`${req.params.id}`],
         (err, results) => {
           if (err) throw err
-         const params = {  Bucket: 'groupomania-images', Key: results[0].s3ImageKey };
-          s3.deleteObject(params, function(err) {
-            if (err) console.log(err, err.stack);  
-            else     console.log('Deleted');                
-          });
+          const params = {
+            Bucket: 'groupomania-images',
+            Delete: {
+              Objects: [
+                {
+                  Key: results[0].s3ImageKey,
+                },
+                {
+                  Key: results[1].s3ImageKey,
+                },
+              ],
+              Quiet: false,
+            },
+          }
 
+          s3.deleteObjects(params, function (err) {
+            if (err) console.log(err, err.stack)
+            else console.log('Deleted')
+          })
 
           db.execute(
             'DELETE FROM users WHERE userId = ?',
@@ -152,8 +167,8 @@ exports.deleteAccount = (req, res, next) => {
               })
             },
           )
-
-        })
+        },
+      )
     },
   )
 }
