@@ -15,15 +15,16 @@ exports.newsfeed = (req, res, next) => {
 exports.createPost = (req, res, next) => {
   // Check if there is a file before submitting values to database. If not, set the multimediaUrl as null.
   let image = ""
-  if (req.file) {image = req.file.location}
-  else {image = null}
+  if (req.file) {image = req.file.location; s3ImageKey = req.file.key}
+  else {image = null; s3ImageKey = null}
   db.execute(
-    'INSERT INTO posts ( textContent, timestamp, multimediaUrl, userId ) VALUES (?, ?, ?, ?)',
+    'INSERT INTO posts ( textContent, timestamp, multimediaUrl, userId, s3ImageKey ) VALUES (?, ?, ?, ?, s3ImageKey)',
     [
       `${req.body.textContent}`,
       `${req.body.timestamp}`,
       `${image}`,
-      `${req.body.userId}`
+      `${req.body.userId}`,
+      `${s3ImageKey}`
     ],
     (err) => {
       if (err) {
