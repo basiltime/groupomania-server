@@ -121,15 +121,25 @@ exports.deleteAccount = (req, res, next) => {
   WHERE users.userId = ?`,
     [`${req.params.id}`],
     (err, results) => {
-      console.log(results[0].s3ImageKey)
-      console.log(results[0])
-      console.log(results)
       if (err) throw err
      const params = {  Bucket: 'groupomania-images', Key: results[0].s3ImageKey };
-      s3.deleteObject(params, function(err, data) {
+      s3.deleteObject(params, function(err) {
         if (err) console.log(err, err.stack);  
         else     console.log('Deleted');                
       });
+
+      db.execute(
+        `SELECT s3ImageKey
+      FROM posts
+      WHERE posts.userId = ?`,
+        [`${req.params.id}`],
+        (err, results) => {
+          if (err) throw err
+         const params = {  Bucket: 'groupomania-images', Key: results[0].s3ImageKey };
+          s3.deleteObject(params, function(err) {
+            if (err) console.log(err, err.stack);  
+            else     console.log('Deleted');                
+          });
 
 
           db.execute(
@@ -142,8 +152,8 @@ exports.deleteAccount = (req, res, next) => {
               })
             },
           )
-        
-      
+
+        })
     },
   )
 }
