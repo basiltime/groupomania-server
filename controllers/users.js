@@ -137,14 +137,14 @@ exports.deleteAccount = (req, res, next) => {
         [`${req.params.id}`],
         (err, results) => {
           if (err) throw err
-          let Objects = []
+          let objects = []
           results.forEach(function (item) {
-            Objects.push({ Key: item.s3ImageKey })
+            objects.push({ Key: item.s3ImageKey })
           })
           const params = {
             Bucket: 'groupomania-images',
             Delete: {
-              Objects,
+              Objects: objects,
               Quiet: false,
             },
           }
