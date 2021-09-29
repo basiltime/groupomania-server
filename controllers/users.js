@@ -122,7 +122,7 @@ exports.deleteAccount = (req, res, next) => {
     [`${req.params.id}`],
     (err, results) => {
       if (err) throw err
-     const params = {  Bucket: 'groupomania-images', Key: results[0].profilePicUrl };
+     const params = {  Bucket: 'groupomania-images', Key: results[0].s3ImageKey };
       s3.deleteObject(params, function(err, data) {
         if (err) console.log(err, err.stack);  
         else     console.log('Deleted');                
