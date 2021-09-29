@@ -116,7 +116,7 @@ exports.viewAccount = (req, res, next) => {
 exports.deleteAccount = (req, res, next) => {
 
   db.execute(
-    `SELECT profilePicUrl
+    `SELECT s3ImageKey
   FROM users
   WHERE users.userId = ?`,
     [`${req.params.id}`],
