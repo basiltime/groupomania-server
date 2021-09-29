@@ -18,7 +18,7 @@ exports.createPost = (req, res, next) => {
   if (req.file) {image = req.file.location; s3ImageKey = req.file.key}
   else {image = null; s3ImageKey = null}
   db.execute(
-    'INSERT INTO posts ( textContent, timestamp, multimediaUrl, userId, s3ImageKey ) VALUES (?, ?, ?, ?, s3ImageKey)',
+    'INSERT INTO posts ( textContent, timestamp, multimediaUrl, userId, s3ImageKey ) VALUES (?, ?, ?, ?, ?)',
     [
       `${req.body.textContent}`,
       `${req.body.timestamp}`,
