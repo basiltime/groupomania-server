@@ -121,6 +121,8 @@ exports.deleteAccount = (req, res, next) => {
     [`${req.params.id}`],
     (err, results) => {
       if (err) throw err
+
+      // Delete user's profile pic from S3
       const params = {
         Bucket: 'groupomania-images',
         Key: results[0].s3ImageKey,
@@ -136,8 +138,10 @@ exports.deleteAccount = (req, res, next) => {
       WHERE posts.userId = ?`,
         [`${req.params.id}`],
         (err, results) => {
+          
+          // Delete images from user's posts from S3
           if (err) throw err
-          let objects = []
+          let objects = [] // Array of images to be deleted
           results.forEach(function (item) {
             objects.push({ Key: item.s3ImageKey })
           })
