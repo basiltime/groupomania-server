@@ -18,7 +18,6 @@ exports.signup = (req, res, next) => {
     s3ImageKey = req.file.key
   } else {
     profilePic = 'no-photo.png'
-    s3ImageKey = null
   }
   bcrypt.hash(req.body.password, 10).then((hash) => {
     db.execute(
