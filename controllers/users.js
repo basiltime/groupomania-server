@@ -14,11 +14,9 @@ exports.signup = (req, res, next) => {
   // Check if there is a file before submitting values to database. If not, set the profilePicUrl as null.
   let profilePic = ''
   if (req.file) {
-    profilePic = req.file.location
-    s3ImageKey = req.file.key
+    profilePic = req.file.location; s3ImageKey = req.file.key
   } else {
-    profilePic = 'no-photo.png'
-    s3ImageKey = null
+    profilePic = 'no-photo.png'; s3ImageKey = null
   }
   bcrypt.hash(req.body.password, 10).then((hash) => {
     db.execute(
