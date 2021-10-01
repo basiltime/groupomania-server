@@ -1,6 +1,6 @@
 # Groupomania Social Media Site
 
-This is the backend codebase for Groupomania, a fullstack social media web app. **The frontend repo**, as well as **full installation instructions**, can be viewed [**here**](https://github.com/basiltime/groupomania-client)
+This is the backend codebase for Groupomania, a fullstack social media web app. **The frontend repo**, as well as **full installation instructions**, can be viewed [**here**](https://github.com/basiltime/groupomania-client).
 
 Main features of the site include the ability to publish written and multimedia content in a public forum, like and comment on posts, as well as perform account deletion.
 
