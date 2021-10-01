@@ -2,23 +2,34 @@ const db = require('../database-connection/db')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
-
+const aws = require('aws-sdk')
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: 'us-east-2',
+})
 
 /* Create Account */
 exports.signup = (req, res, next) => {
   // Check if there is a file before submitting values to database. If not, set the profilePicUrl as null.
-  let profilePic = ""
-  if (req.file) {profilePic = req.file.location}
-  else {profilePic = 'images/no-photo.png'}
+  let profilePic = ''
+  if (req.file) {
+    profilePic = req.file.location
+    s3ImageKey = req.file.key
+  } else {
+    profilePic = 'no-photo.png'
+    s3ImageKey = null
+  }
   bcrypt.hash(req.body.password, 10).then((hash) => {
     db.execute(
-      'INSERT INTO users ( firstName, lastName, email, password, profilePicUrl ) VALUES (?, ?, ?, ?, ?)',
+      'INSERT INTO users ( firstName, lastName, email, password, profilePicUrl, s3ImageKey ) VALUES (?, ?, ?, ?, ?, ?)',
       [
         `${req.body.firstName}`,
         `${req.body.lastName}`,
         `${req.body.email}`,
         `${hash}`,
-        `${profilePic}`
+        `${profilePic}`,
+        `${s3ImageKey}`,
       ],
       (err, fields) => {
         if (err && (err.code = 'ER_DUP_ENTRY')) {
@@ -27,6 +38,7 @@ exports.signup = (req, res, next) => {
           res.status(500).json({ message: 'something else went wrong' })
         } else {
           console.log('New Account Created')
+          console.log(req.file.key)
           let user = fields.insertId
           const token = jwt.sign(
             { userId: user },
@@ -42,7 +54,6 @@ exports.signup = (req, res, next) => {
     )
   })
 }
-
 
 /* Login */
 exports.login = (req, res, next) => {
@@ -95,7 +106,7 @@ exports.viewAccount = (req, res, next) => {
         firstName: `${user.firstName}`,
         lastName: `${user.lastName}`,
         email: `${user.email}`,
-        profilePicUrl: `${user.profilePicUrl}`
+        profilePicUrl: `${user.profilePicUrl}`,
       })
     },
   )
@@ -104,13 +115,67 @@ exports.viewAccount = (req, res, next) => {
 /* Delete Account */
 exports.deleteAccount = (req, res, next) => {
   db.execute(
-    'DELETE FROM users WHERE userId = ?',
+    `SELECT s3ImageKey
+  FROM users
+  WHERE users.userId = ?`,
     [`${req.params.id}`],
-    (err) => {
+    (err, results) => {
       if (err) throw err
-      res.status(200).json({
-        message: 'Account successfully deleted',
+
+      // Delete user's profile pic from S3
+      const params = {
+        Bucket: 'groupomania-images',
+        Key: results[0].s3ImageKey,
+      }
+      s3.deleteObject(params, function (err) {
+        if (err) console.log(err, err.stack)
+        else console.log('Deleted')
       })
+
+      db.execute(
+        `SELECT s3ImageKey
+      FROM posts
+      WHERE posts.userId = ?`,
+        [`${req.params.id}`],
+        (err, results) => {
+          
+          // Delete images from user's posts from S3
+          if (err) throw err
+          let objects = [] // Array of images to be deleted
+          results.forEach(function (item) {
+            objects.push({ Key: item.s3ImageKey })
+          })
+          const params = {
+            Bucket: 'groupomania-images',
+            Delete: {
+              Objects: objects,
+              Quiet: false,
+            },
+          }
+
+          s3.deleteObjects(params, function (err) {
+            if (err) console.log(err, err.stack)
+            else console.log('Deleted')
+          })
+
+          db.execute(
+            'DELETE FROM users WHERE userId = ?',
+            [`${req.params.id}`],
+            (err) => {
+              if (err) throw err
+              res.status(200).json({
+                message: results,
+              })
+            },
+          )
+        },
+      )
     },
   )
 }
+
+// `SELECT profilePicUrl, multimediaUrl
+// FROM users
+// LEFT OUTER JOIN posts
+// ON users.userId = posts.userId
+// WHERE users.userId = ?`,

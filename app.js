@@ -5,6 +5,7 @@ const postsRouter = require('./routes/posts')
 const usersRouter = require('./routes/users')
 const commentsRouter = require('./routes/comments')
 const likesRouter = require('./routes/likes')
+const homeRouter = require('./routes/home')
 const app = express()
 
 
@@ -18,10 +19,12 @@ app.use((req, res, next) => {
   next();
 });
 
+
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/comments', commentsRouter)
 app.use('/likes', likesRouter)
+app.use('/', homeRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -37,5 +40,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
 
 });
+
+
 
 module.exports = app;

@@ -11,23 +11,29 @@ exports.like = (req, res, next) => {
       if (results.length == 0) {
         db.execute(
           'INSERT INTO likes ( postId, userId ) VALUES ( ?, ?)',
-          [`${req.body.postId}`, `${req.body.userId}`],(err, results) => {},
+          [`${req.body.postId}`, `${req.body.userId}`],(err, results) => {
+            db.execute(`SELECT * FROM likes`, (err, results) => {
+              res.status(200).json({
+                  data: results,
+                  message: 'Liked'
+              })
+          },
         )
-        db.execute(`SELECT * FROM likes`, (err, results) => {
-          res.status(200).json({
-              data: results
-          })
+        
       })
       } else if (!results.length == 0) {
         db.execute(
           'DELETE FROM likes WHERE ( postId, userId ) = ( ?, ? );', 
-          [`${req.body.postId}`, `${req.body.userId}`], (err, results) => {},
-        )
-        db.execute(`SELECT * FROM likes`, (err, results) => {
-          res.status(200).json({
-              data: results
+          [`${req.body.postId}`, `${req.body.userId}`], (err, results) => {
+            db.execute(`SELECT * FROM likes`, (err, results) => {
+              res.status(200).json({
+                  data: results,
+                  message: 'Unliked'
+              })
           })
-      })
+          },
+        )
+        
       }
     },
   )
