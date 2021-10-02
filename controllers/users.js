@@ -36,7 +36,6 @@ exports.signup = (req, res, next) => {
           res.status(500).json({ message: 'something else went wrong' })
         } else {
           console.log('New Account Created')
-          console.log(req.file.key)
           let user = fields.insertId
           const token = jwt.sign(
             { userId: user },
