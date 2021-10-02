@@ -161,7 +161,7 @@ exports.deleteAccount = (req, res, next) => {
             (err) => {
               if (err) throw err
               res.status(200).json({
-                message: results,
+                message: 'Account Deleted',
               })
             },
           )
@@ -170,9 +170,3 @@ exports.deleteAccount = (req, res, next) => {
     },
   )
 }
-
-// `SELECT profilePicUrl, multimediaUrl
-// FROM users
-// LEFT OUTER JOIN posts
-// ON users.userId = posts.userId
-// WHERE users.userId = ?`,
