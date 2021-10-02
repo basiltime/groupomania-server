@@ -11,16 +11,8 @@ Main features of the site include the ability to publish written and multimedia 
 <br>
 
 
-## Data Model ##
 
-  *Database ERD coming soon*
-
-
-<br>
-
-## API Endpoints ##
-
-  *Documentation Coming Soon*
+Click [**here**](https://docs.google.com/document/d/1SyXwSZEdi1HbA4wNtFr42xeiVSVZguMiRciA6VzqpBA/edit?usp=sharing) to see the API endpoints documentation and database ERD, authored by myself.
 
 <br>
 
