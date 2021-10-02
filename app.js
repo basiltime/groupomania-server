@@ -7,9 +7,11 @@ const commentsRouter = require('./routes/comments')
 const likesRouter = require('./routes/likes')
 const homeRouter = require('./routes/home')
 const app = express()
+const cors = require('cors')
 
 
 app.use(express.json())
+app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 
 app.use((req, res, next) => {
