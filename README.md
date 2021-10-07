@@ -6,7 +6,7 @@ Main features of the site include the ability to publish written and multimedia 
 
 <br>
 
-*⭐️ The front end of this project is deployed to Nelify, and the backend is deployed to Heroku.⭐️*
+*⭐️ The front end of this project is deployed to Netlify, and the backend is deployed to Heroku.⭐️*
 
 <br>
 
